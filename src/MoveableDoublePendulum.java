@@ -116,7 +116,6 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         m_Stick1 = new CSpring(0, 0, 1, 0.4);
         m_Stick1.m_DrawMode = CElement.MODE_LINE;
         cvs.addElement(m_Stick1);
-
         // x1, y1, restLen, thickness
         m_Stick2 = new CSpring(0, 0, 1, 0.4);
         m_Stick2.m_DrawMode = CElement.MODE_LINE;
