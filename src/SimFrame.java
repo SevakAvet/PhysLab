@@ -49,7 +49,6 @@ public class SimFrame extends JFrame implements AppletStub, AppletContext {
         Dimension d = tk.getScreenSize();
         setSize(800, 500);
         setLocation(300 + d.width / 10, 200 + d.height / 10);
-        setResizable(false);
         applet.setStub(this);
         addWindowListener(new SimWindowAdapter(applet));
     }
