@@ -4,7 +4,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class Lab extends JApplet implements ItemListener {
-    private static int testNumber = 0;
     private SimThread timer = null;
     private Simulation sim = null;
     private JComboBox simMenu = null;
@@ -16,7 +15,7 @@ public class Lab extends JApplet implements ItemListener {
         try {
             UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         JApplet applet = new Lab();
@@ -27,7 +26,7 @@ public class Lab extends JApplet implements ItemListener {
     }
 
     public void init() {
-        startSim(testNumber);
+        startSim(0);
     }
 
     private void startSim(int simIndex) {
@@ -38,8 +37,6 @@ public class Lab extends JApplet implements ItemListener {
             this.currentSimMenuItem = -1;
         }
 
-        if (simIndex < 0)
-            return;
         sim = new Spring2DSim(getContentPane());
 
         this.currentSimMenuItem = simIndex;

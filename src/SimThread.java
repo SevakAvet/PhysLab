@@ -1,7 +1,6 @@
 public class SimThread extends Thread {
     private Runnable sim;
     private long delay;
-    private boolean suspendRequested = false;
 
     SimThread(Runnable sim, long delay) {
         super("SimThread");
@@ -20,18 +19,7 @@ public class SimThread extends Thread {
         }
     }
 
-    public void requestSuspend() {
-        suspendRequested = true;
-    }
-
     private synchronized void checkSuspended() throws InterruptedException {
-        while (suspendRequested)
-            wait();
-    }
-
-    public synchronized void requestResume() {
-        suspendRequested = false;
-        notifyAll();
     }
 }
 

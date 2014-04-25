@@ -48,7 +48,6 @@ public class Graph extends JComponent implements MouseListener, ItemListener, Ac
 
     public Graph(Graphable sim) {
         this.sim = sim;
-
         int sz = 10;
         map = new CoordMap(CoordMap.INCREASE_UP, -sz, sz, -sz, sz,
                 CoordMap.ALIGN_MIDDLE, CoordMap.ALIGN_MIDDLE);

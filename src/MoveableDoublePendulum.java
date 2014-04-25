@@ -64,7 +64,6 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
 
     private String[] params = {MASS1, MASS2, LENGTH1, LENGTH2, GRAVITY,
             DAMPING1, DAMPING2, STIFFNESS, ANCHOR_DAMPING};
-    double period = 5;
     private CMass m_Mass1, m_Mass2, topMass;
     private CSpring m_Stick1, m_Stick2;
     private double gravity = 9.8;

@@ -177,8 +177,6 @@ public class SimCanvas extends JComponent implements KeyListener, MouseListener,
     public void keyReleased(KeyEvent e) {
     }
 
-
-
     public void keyTyped(KeyEvent e) {
     }
 

@@ -1,4 +1,3 @@
-
 public class RungeKutta implements DiffEqSolver {
     DiffEq ode;
     double[] inp, k1, k2, k3, k4;

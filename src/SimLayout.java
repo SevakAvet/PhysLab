@@ -3,7 +3,6 @@ import java.awt.*;
 
 public class SimLayout implements LayoutManager {
     private final int SPACER = 5;
-    private boolean debug = false;
 
     public SimLayout() {
     }
@@ -73,8 +72,6 @@ public class SimLayout implements LayoutManager {
     }
 
     public void layoutContainer(Container target) {
-
-
         int canvasWidth = target.getSize().width;
         int numPanels = countNumPanels(target);
         int[] lineHeights = new int[100];

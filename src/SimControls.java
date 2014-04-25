@@ -3,27 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.NumberFormat;
 
-
-
-class MyScrollbar extends JScrollBar {
-    int w, h;
-
-    public MyScrollbar(int w, int h, int orient, int value, int vis, int min, int max) {
-
-        super(orient, value, vis, min, max);
-        this.w = w;
-        this.h = h;
-    }
-
-    public Dimension getPreferredSize() {
-        return new Dimension(w, h);
-    }
-}
-
-
-
-
-
 class MyLabel extends JLabel {
     String sample = null;
 
@@ -33,11 +12,6 @@ class MyLabel extends JLabel {
 
     public MyLabel(String text, int alignment) {
         super(text, alignment);
-    }
-
-    public MyLabel(String text, int alignment, String sample) {
-        super(text, alignment);
-        this.sample = sample;
     }
 
     public Dimension getPreferredSize() {
@@ -56,107 +30,6 @@ class MyLabel extends JLabel {
     }
 }
 
-
-
-class MyCheckbox extends JCheckBox implements ItemListener, Observer {
-    private double value;
-    private Subject subj;
-    private String name;
-
-    public MyCheckbox(Subject subj, String name) {
-        super(name);
-        this.subj = subj;
-        this.name = name;
-        this.value = subj.getParameter(name);
-        setSelected(this.value != 0);
-        addItemListener(this);
-    }
-
-    public String toString() {
-        return "MyCheckbox \"" + name + "\" value=" + value;
-    }
-
-    public void update(Subject subj, String param, double value) {
-        if (param.equalsIgnoreCase(name) && value != this.value) {
-            this.value = value;
-            setSelected(this.value != 0);
-        }
-    }
-
-    public void itemStateChanged(ItemEvent event) {
-        ItemSelectable isl = event.getItemSelectable();
-        if (isl == this) {
-            value = (null != getSelectedObjects()) ? 1 : 0;
-            subj.setParameter(name, value);
-        }
-    }
-}
-
-
-
-class MySlider extends JComponent implements AdjustmentListener, Observer {
-    private double min, delta, value;
-    private MyScrollbar scroll;
-    private MyLabel nameLabel;
-    private MyLabel myNumber;
-    private NumberFormat nf;
-    private Subject subj;
-    private String name;
-
-    public MySlider(Subject subj, String name,
-                    double min, double max, int increments, int digits) {
-        this.subj = subj;
-        this.name = name;
-        this.min = min;
-        this.value = subj.getParameter(name);
-        delta = (max - min) / increments;
-        nameLabel = new MyLabel(name, SwingConstants.CENTER);
-        add(nameLabel);
-
-        scroll = new MyScrollbar(75, 15, Scrollbar.HORIZONTAL, (int) (0.5 + (value - min) / delta),
-                10, 0, increments + 10);
-        add(scroll);
-        scroll.addAdjustmentListener(this);
-        nf = NumberFormat.getNumberInstance();
-        nf.setMaximumFractionDigits(digits);
-        nf.setMinimumFractionDigits(digits);
-        myNumber = new MyLabel(nf.format(value), SwingConstants.LEFT, "88.88");
-        add(myNumber);
-        setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
-    }
-
-    public String toString() {
-        return "MySlider \"" + name + "\" value=" + nf.format(value);
-    }
-
-    public void update(Subject subj, String param, double value) {
-        if (param.equalsIgnoreCase(name) && value != this.value) {
-            this.value = value;
-            myNumber.setText(nf.format(value));
-
-
-            scroll.setValue((int) (0.5 + (value - min) / delta));
-        }
-    }
-
-
-
-    public void adjustmentValueChanged(AdjustmentEvent e) {
-        if (e.getAdjustable() == scroll) {
-            value = min + (double) scroll.getValue() * delta;
-            myNumber.setText(nf.format(value));
-            if (subj != null)
-                subj.setParameter(name, value);
-        }
-    }
-
-  
-  
-}
-
-
-
-
 class SimLine extends JComponent {
     public void paint(Graphics g) {
         Dimension size = getSize();
@@ -168,8 +41,6 @@ class SimLine extends JComponent {
         return new Dimension(1000, 1);
     }
 }
-
-
 
 class DoubleField extends JComponent implements Observer {
     private double value;
@@ -200,10 +71,6 @@ class DoubleField extends JComponent implements Observer {
 
     public DoubleField(Subject subj, String name, int digits) {
         this(subj, name, subj.getParameter(name), digits, 4);
-    }
-
-    public DoubleField(Subject subj, String name, double value, int digits) {
-        this(subj, name, value, digits, 4);
     }
 
     public String toString() {
@@ -256,7 +123,7 @@ class DoubleField extends JComponent implements Observer {
         private void validate(JTextField field) {
             try {
 
-                double value = (new Double(field.getText())).doubleValue();
+                double value = new Double(field.getText());
                 if (value != dblField.value)
                     dblField.modifyValue(value);
             } catch (NumberFormatException e) {
@@ -265,48 +132,3 @@ class DoubleField extends JComponent implements Observer {
         }
     }
 }
-
-
-
-
-
-
-class MyChoice extends JComboBox implements ItemListener, Observer {
-    private double value;
-    private double min;
-    private String name;
-    private Subject subj;
-
-    public MyChoice(Subject subj, String name, double value, double min, Object[] choices) {
-        this.subj = subj;
-        this.name = name;
-        this.value = value;
-        this.min = min;
-        int index = (int) (value - min);
-        if (index < 0 || index >= choices.length)
-            throw new IllegalArgumentException("Value=" + value + " but must be in range " + min +
-                    " to " + (min + choices.length - 1));
-        for (int i = 0; i < choices.length; i++)
-            addItem(choices[i].toString());
-        setSelectedIndex(index);
-        addItemListener(this);
-    }
-
-    public void itemStateChanged(ItemEvent e) {
-        value = min + (double) getSelectedIndex();
-        if (subj != null)
-            subj.setParameter(name, value);
-    }
-
-    public void update(Subject subj, String param, double value) {
-        if (param.equalsIgnoreCase(name) && value != this.value) {
-            int index = (int) (Math.floor(value) - min);
-            if (index < 0 || index >= this.getItemCount())
-                throw new IllegalArgumentException("Value=" + value + " but must be in range " + min +
-                        " to " + (min + getItemCount() - 1));
-            this.value = Math.floor(value);
-            setSelectedIndex((int) (this.value - this.min));
-        }
-    }
-}
-

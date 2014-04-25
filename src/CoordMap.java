@@ -1,98 +1,17 @@
-import java.awt.*;
-
-
-final class DoubleRect {
-    private final double xMin, xMax, yMin, yMax;
-
-    public DoubleRect(double xMin, double yMin, double xMax, double yMax) {
-        if (xMin > xMax)
-            throw new IllegalArgumentException("xMin=" + xMin + " must be less than xMax=" + xMax);
-        if (yMin > yMax)
-            throw new IllegalArgumentException("yMin=" + yMin + " must be less than yMax=" + yMax);
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.yMin = yMin;
-        this.yMax = yMax;
-    }
-
-    public String toString() {
-        return "DoubleRect xMin=" + xMin + " xMax=" + xMax + " yMin=" + yMin + " yMax=" + yMax;
-    }
-
-    public double getXMin() {
-        return xMin;
-    }
-
-    public double getXMax() {
-        return xMax;
-    }
-
-    public double getYMin() {
-        return yMin;
-    }
-
-    public double getYMax() {
-        return yMax;
-    }
-
-    public double getWidth() {
-        return xMax - xMin;
-    }
-
-    public double getHeight() {
-        return yMax - yMin;
-    }
-}
-
-
 class ConvertMap {
     private CoordMap map;
-
     public ConvertMap(CoordMap map) {
         this.map = map;
     }
-
-    public int simToScreenScaleX(double x) {
-
-        return map.simToScreenScaleX(x);
-    }
-
-    public int simToScreenScaleY(double y) {
-
-        return map.simToScreenScaleY(y);
-    }
-
     public int simToScreenX(double x) {
-
         return map.simToScreenX(x);
     }
-
     public int simToScreenY(double y) {
-
         return map.simToScreenY(y);
-    }
-
-    public double screenToSimX(int scr_x) {
-
-        return map.screenToSimX(scr_x);
-    }
-
-    public double screenToSimY(int scr_y) {
-
-        return map.screenToSimY(scr_y);
-    }
-
-    public DoubleRect getSimBounds() {
-        return map.getSimBounds();
-    }
-
-    public Rectangle getScreenRect() {
-        return map.getScreenRect();
     }
 }
 
 public class CoordMap {
-
     public static final int ALIGN_MIDDLE = 0;
     public static final int ALIGN_LEFT = 1;
     private int align_x = ALIGN_LEFT;
@@ -135,18 +54,6 @@ public class CoordMap {
     }
 
 
-    public CoordMap(int y_dir, double x1, double x2, double y1, double y2,
-                    int originX, int originY, double scaleX, double scaleY) {
-        y_direction = y_dir;
-        originFixed = true;
-        origin_x = originX;
-        origin_y = originY;
-        scaleFixed = true;
-        pixel_per_unit_x = scaleX;
-        pixel_per_unit_y = scaleY;
-        setRange(x1, x2, y1, y2);
-    }
-
     public ConvertMap getConvertMap() {
         return convertMap;
     }
@@ -167,7 +74,6 @@ public class CoordMap {
         s += "]";
         return s;
     }
-
 
     private void recalc() {
         double sim_width = simMaxX - simMinX;
@@ -260,45 +166,6 @@ public class CoordMap {
         }
     }
 
-    public void setAlignment(int align_x, int align_y) {
-        this.align_x = align_x;
-        this.align_y = align_y;
-        originFixed = false;
-        recalc();
-    }
-
-    public void setOrigin(int x, int y) {
-        origin_x = x;
-        origin_y = y;
-        originFixed = true;
-    }
-
-    public void setScale(double x, double y) {
-        pixel_per_unit_x = x;
-        pixel_per_unit_y = y;
-        scaleFixed = true;
-    }
-
-    public void zoom(double x1, double x2, double y1, double y2) {
-        if (y2 <= y1)
-            throw new IllegalArgumentException("CoordMap:zoom() y1=" + y1 + " must be less than y2=" + y2);
-        if (x2 <= x1)
-            throw new IllegalArgumentException("CoordMap:zoom() x1=" + x1 + " must be less than x2=" + x2);
-        zoomMode = true;
-        originFixed = scaleFixed = false;
-        zx1 = x1;
-        zx2 = x2;
-        zy1 = y1;
-        zy2 = y2;
-        recalc();
-    }
-
-    public void setZoom(boolean state) {
-        zoomMode = state;
-        recalc();
-    }
-
-
     public void setFillScreen(boolean f) {
         fill_screen = f;
         scaleFixed = false;
@@ -327,7 +194,6 @@ public class CoordMap {
     }
 
     public void setRange(double xlo, double xhi, double ylo, double yhi) {
-
         simMinX = xlo;
         simMaxX = xhi;
         simMinY = ylo;
@@ -336,7 +202,6 @@ public class CoordMap {
     }
 
     public void setScreen(int left, int top, int width, int height) {
-
         if ((width > 0) && (height > 0)) {
             screen_top = top;
             screen_left = left;
@@ -346,48 +211,22 @@ public class CoordMap {
         }
     }
 
-    public int simToScreenScaleX(double x) {
-
-        return (int) (x * pixel_per_unit_x + 0.5);
-    }
-
-    public int simToScreenScaleY(double y) {
-
-        return (int) (y * pixel_per_unit_y + 0.5);
-    }
-
     public int simToScreenX(double x) {
-
         return origin_x + (int) (x * pixel_per_unit_x + 0.5);
     }
 
     public int simToScreenY(double y) {
-
         return origin_y + y_direction * (int) (y * pixel_per_unit_y + 0.5);
     }
 
     public double screenToSimX(int scr_x) {
-
         return (double) (scr_x - origin_x) / pixel_per_unit_x;
     }
 
     public double screenToSimY(int scr_y) {
-
         return y_direction * (double) (scr_y - origin_y) / pixel_per_unit_y;
     }
 
-    public DoubleRect getSimBounds() {
-        return new DoubleRect(simMinX, simMinY, simMaxX, simMaxY);
-    }
-
-
-    public Rectangle getScreenRect() {
-        double top = (y_direction == INCREASE_UP) ? simMaxY : simMinY;
-
-        return new Rectangle(simToScreenX(simMinX), simToScreenY(top),
-                simToScreenScaleX(simMaxX - simMinX),
-                simToScreenScaleY(simMaxY - simMinY));
-    }
 
     public double getMinX() {
         return simMinX;
@@ -403,27 +242,6 @@ public class CoordMap {
 
     public double getMaxY() {
         return simMaxY;
-    }
-
-    public boolean intersectRect(Rectangle r) {
-        int x1, y1, x2, y2;
-        x1 = r.x;
-        y1 = r.y;
-        x2 = x1 + r.width;
-        y2 = y1 + r.height;
-        int sx1 = screen_left;
-        int sy1 = screen_top;
-        int sx2 = screen_left + screen_width;
-        int sy2 = screen_top + screen_height;
-        if (sx1 >= x2)
-            return false;
-        if (x1 >= sx2)
-            return false;
-        if (sy1 >= y2)
-            return false;
-        if (y1 >= sy2)
-            return false;
-        return true;
     }
 }
 
