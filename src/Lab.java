@@ -10,14 +10,6 @@ public class Lab extends JApplet implements ItemListener {
     private int currentSimMenuItem = -1;
 
     public static void main(String[] args) {
-        System.setProperty("Quaqua.tabLayoutPolicy","wrap");
-
-        try {
-            UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         JApplet applet = new Lab();
         JFrame frame = new SimFrame(applet);
         frame.setContentPane(applet.getContentPane());
