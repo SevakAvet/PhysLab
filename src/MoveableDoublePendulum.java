@@ -6,13 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 
-////////////////////////////////////////////////////////////////////
-// MoveableDoublePendulumCanvas implements special mouse and key handling for the
-// MoveableDoublePendulum simulation.
-// The mouse handling allows for "rubber band force" dragging,
-// where we find the nearest object and then track the current mouse
-// location.
-
 class MoveableDoublePendulumCanvas extends SimCanvas {
 
     public MoveableDoublePendulumCanvas(MouseDragHandler mdh) {
@@ -20,10 +13,10 @@ class MoveableDoublePendulumCanvas extends SimCanvas {
     }
 
     public void mousePressed(MouseEvent evt) {
-        int scr_x = evt.getX();  // screen coords
+        int scr_x = evt.getX();
         int scr_y = evt.getY();
-        // which object did mouse click on?
-        double sim_x = map.screenToSimX(scr_x);  // simulation coords
+
+        double sim_x = map.screenToSimX(scr_x);
         double sim_y = map.screenToSimY(scr_y);
         dragObj = findNearestDragable(sim_x, sim_y);
         if (dragObj != null) {
@@ -38,26 +31,20 @@ class MoveableDoublePendulumCanvas extends SimCanvas {
         if (dragObj != null) {
             double sim_x = map.screenToSimX(evt.getX());
             double sim_y = map.screenToSimY(evt.getY());
-            // let the simulation modify the object
+
             if (mdh != null) mdh.constrainedSet(dragObj, sim_x, sim_y);
         }
     }
 
-    // keyPressed is where we can capture control keys like backspace & enter
+
     public void keyPressed(KeyEvent e) {
-        //System.out.println("keyPressed "+e);
-        int keyCode = e.getKeyCode();
-        // ((Thruster5)mdh).handleKeyEvent(keyCode, true);
     }
 
     public void keyReleased(KeyEvent e) {
-        //System.out.println("keyReleased "+e);
-        int keyCode = e.getKeyCode();
-        //((Thruster5)mdh).handleKeyEvent(keyCode, false);
     }
 
     public void mouseEntered(MouseEvent evt) {
-        //System.out.println("mouseEntered ThrusterCanvas");
+
         requestFocus();
     }
 
@@ -73,8 +60,8 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
             MASS2 = "mass2", LENGTH1 = "stick1 length", LENGTH2 = "stick2 length",
             GRAVITY = "gravity", DAMPING1 = "damping1", DAMPING2 = "damping2",
             STIFFNESS = "mouse spring stiffness", ANCHOR_DAMPING = "anchor damping";
-    // important that the params list of strings remains private, so can't
-    // be overridden
+
+
     private String[] params = {MASS1, MASS2, LENGTH1, LENGTH2, GRAVITY,
             DAMPING1, DAMPING2, STIFFNESS, ANCHOR_DAMPING};
     double period = 5;
@@ -103,7 +90,7 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
                 "anchorY",
                 "anchorY velocity"
         };
-        // x range was -2 to 2
+
         setCoordMap(new CoordMap(CoordMap.INCREASE_UP, -4, 4, -2.2, 1.5,
                 CoordMap.ALIGN_MIDDLE, CoordMap.ALIGN_MIDDLE));
 
@@ -112,17 +99,17 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         topMass.m_Color = Color.red;
         cvs.addElement(topMass);
 
-        // x1, y1, restLen, thickness
+
         m_Stick1 = new CSpring(0, 0, 1, 0.4);
         m_Stick1.m_DrawMode = CElement.MODE_LINE;
         cvs.addElement(m_Stick1);
-        // x1, y1, restLen, thickness
+
         m_Stick2 = new CSpring(0, 0, 1, 0.4);
         m_Stick2.m_DrawMode = CElement.MODE_LINE;
         cvs.addElement(m_Stick2);
 
         w = 0.2;
-        // x1, y1, width, height, drawmode
+
         m_Mass1 = new CMass(0, 0, w, w, CElement.MODE_CIRCLE_FILLED);
         m_Mass1.m_Mass = 0.5;
         m_Mass1.m_Color = Color.blue;
@@ -135,26 +122,23 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         m_Mass2.m_Color = Color.blue;
         cvs.addElement(m_Mass2);
 
-        //vars[0]=Math.PI/8;
+
         vars[0] = vars[1] = vars[2] = vars[3] = 0;
-        vars[4] = 0; // time
-        vars[5] = 0;  // x0 = anchor X
-        vars[6] = 0;  // x0' = anchor X velocity
-        vars[7] = 0;  // y0 = anchor Y
-        vars[8] = 0;  // y0' = anchor Y velocity
+        vars[4] = 0;
+        vars[5] = 0;
+        vars[6] = 0;
+        vars[7] = 0;
+        vars[8] = 0;
         modifyObjects();
     }
 
-    // A "Factory Method" pattern (see Design Patterns book).
-    // Allows this class to specify what is actually instantiated by
-    // some other class.
     protected SimCanvas makeSimCanvas() {
         return new MoveableDoublePendulumCanvas(this);
     }
 
     public void setupControls() {
         super.setupControls();
-        // DoubleField params:  subject, name, fraction digits
+
         for (int i = 0; i < params.length; i++)
             addObserverControl(new DoubleField(this, params[i], 2));
         showControls(true);
@@ -165,11 +149,11 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button_stop) {
             vars[0] = vars[1] = vars[2] = vars[3] = 0;
-            vars[4] = 0; // time
-            vars[5] = 0;  // x0 = anchor X
-            vars[6] = 0;  // x0' = anchor X velocity
-            vars[7] = 0;  // y0 = anchor Y
-            vars[8] = 0;  // y0' = anchor Y velocity
+            vars[4] = 0;
+            vars[5] = 0;
+            vars[6] = 0;
+            vars[7] = 0;
+            vars[8] = 0;
         }
     }
 
@@ -213,8 +197,7 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         }
     }
 
-    /* This method is designed to be overriden, just be sure to
-      call the super method also to deal with the super class's parameters. */
+
     protected boolean trySetParameter(String name, double value) {
         if (name.equalsIgnoreCase(MASS1)) {
             m_Mass1.m_Mass = value;
@@ -247,9 +230,7 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         return super.trySetParameter(name, value);
     }
 
-    /* When overriding this method, be sure to call the super class
-       method at the end of the procedure, to deal with other
-       parameters and exceptions. */
+
     public double getParameter(String name) {
         if (name.equalsIgnoreCase(MASS1))
             return m_Mass1.m_Mass;
@@ -272,15 +253,7 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         return super.getParameter(name);
     }
 
-    /* When overriding this method, you need to call the super class
-       to get its parameters, and add them on to the array. */
-    public String[] getParameterNames() {
-        return params;
-    }
-
     public void modifyObjects() {
-        // the variables are:  0,1,2,3:  theta1,theta1',theta2,theta2'
-        // limit the pendulum angle to +/- Pi
         if (vars[0] > Math.PI)
             vars[0] = vars[0] - 2 * Math.PI * Math.floor(vars[0] / Math.PI);
         else if (vars[0] < -Math.PI)
@@ -291,12 +264,10 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
         else if (vars[2] < -Math.PI)
             vars[2] = vars[2] - 2 * Math.PI * Math.ceil(vars[2] / Math.PI);
 
-        //topMass.setPosition(getAnchorX(vars[4]), 0);
-        // x1, y1 is bottom left, because we have y increasing upwards.
         topMass.setPosition(vars[5] - topMass.m_Width / 2, vars[7] - topMass.m_Height / 2);
-        double x0 = topMass.m_X1 + topMass.m_Width / 2;  // center of anchor cube
-        double y0 = topMass.m_Y1 + topMass.m_Height / 2; // center of anchor cube
-        //rememberAnchorPosition(x0, y0, getTime());
+        double x0 = topMass.m_X1 + topMass.m_Width / 2;
+        double y0 = topMass.m_Y1 + topMass.m_Height / 2;
+
         double w = m_Mass1.m_Width / 2;
         double L1 = m_Stick1.m_RestLength;
         double L2 = m_Stick2.m_RestLength;
@@ -315,7 +286,7 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
     public void startDrag(Dragable e) {
         if (e == topMass)
             this.mouseDown = true;
-        // can't do "live dragging" because everything is too connected!
+
         if ((e == m_Mass1) || (e == m_Mass2)) {
             calc[0] = calc[1] = calc[2] = calc[3] = false;
         }
@@ -329,99 +300,46 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
 
 
     public void constrainedSet(Dragable e, double x, double y) {
-        //double x0 = topMass.m_X1 + topMass.m_Width/2;  // center of anchor cube
+
         double x0 = vars[5];
-        double y0 = vars[7];  // center of anchor cube
+        double y0 = vars[7];
         double w = m_Mass1.m_Width / 2;
 
         if (e == topMass) {
             this.mouseX = x;
             this.mouseY = y;
-            //System.out.println("mouse at "+this.mouseX+"  "+this.mouseY);
-            //e.setPosition(x, y);
-            //modifyObjects();
         } else if (e == m_Mass1) {
-            //the variables are:  0,1,2,3:  theta1,theta1',theta2,theta2'
-            // x,y correspond to the new m_X1, m_Y1 of the object
-            // We want to work with the center of the object,
-            // so adjust to xx,yy as follows.
-            double xx = (x - x0) + w; // coords of center
+            double xx = (x - x0) + w;
             double yy = (y - y0) + w;
             double th1 = Math.atan2(xx, -yy);
             vars[0] = th1;
-            vars[1] = 0;  // theta1'
-            vars[3] = 0; // theta2'
+            vars[1] = 0;
+            vars[3] = 0;
             modifyObjects();
         } else if (e == m_Mass2) {
             double L1 = m_Stick1.m_RestLength;
-            double L2 = m_Stick2.m_RestLength;
-            // get center of mass1
             double x1 = x0 + L1 * Math.sin(vars[0]);
             double y1 = y0 - L1 * Math.cos(vars[0]);
-            // get center of mass2  (x,y correspond to m_X1,m_Y1 = topleft)
-            double x2 = x + w; // coords of center
+
+            double x2 = x + w;
             double y2 = y + w;
             double th2 = Math.atan2(x2 - x1, -(y2 - y1));
-            vars[1] = 0;  // theta1'
+            vars[1] = 0;
             vars[2] = th2;
             vars[3] = 0;
             modifyObjects();
         }
     }
 
-    /*  Equations for double pendulum
 
-     the variables are:  0,1,2,3:  theta1,theta1',theta2,theta2'
-    vars[0] = theta1  = th1
-    vars[1] = theta1' = dth1
-    vars[2] = theta2  = th2
-    vars[3] = theta2' = dth2
-    vars[4] = time;
-    vars[5] = x0 = anchor X
-    vars[6] = x0' = anchor X velocity
-    vars[7] = y0 = anchor Y
-    vars[8] = y0' = anchor Y velocity
-
-        x0'', y0'' = acceleration of upper pivot point on (moveable) anchor
-              (how to find out x0'' and y0''?)
-        L1,L2 = stick lengths
-        m1,m2 = masses
-        g = gravity
-        theta1,theta2 = angles of sticks with vertical (down = 0)
-        th1,th2 = theta1,theta2 abbreviations
-
-        Diff eqs:  see the Mathematica file:  double pendulum 4.nb
-
-    ============= Mathematica to Java or Latex =======================
-    When you have a complicated result in Mathematica and you want to
-    program it into Java or C++ or Latex, here are the steps:
-    1. Use //CForm to output in a C-friendly text format
-      or //TeXForm for Latex (not sure how well TeXForm works in Latex).
-       You can also try //OutputForm, or even try to invent your
-       own output format (see Mathematica book sections 2.8.1, 2.8.17)
-    2. Select the cell and do "copy as text"
-    3. Paste into a text editor and do modifications like changing
-      Power(a,2) to a*a.
-      NOTE: i have a new automatic way to do this...
-      Unprotect[Power];
-      Format[x_^2, CForm] := Format[StringForm["``*``",CForm[x],CForm[x]],OutputForm]
-        (This is from the Power Programming book I think).
-
-    4. Copy into Java.  Don't try to break a long expression into
-      pieces by storing intermediate results in dummy variables.
-      Instead, just let Java do all that for you... give the
-      compiler the whole long calculation on multiple lines and
-      it will do the right thing!
-
-    */
     public void evaluate(double[] x, double[] change) {
-        change[4] = 1; // time
-        change[5] = x[6]; // x0 ' = vx0
+        change[4] = 1;
+        change[5] = x[6];
         change[6] = -this.anchorDamping * x[6] + (this.mouseDown ? this.stiffness * (this.mouseX - x[5]) : 0);
-        change[7] = x[8]; // y0 ' = vy0
+        change[7] = x[8];
         change[8] = -this.anchorDamping * x[8] + (this.mouseDown ? this.stiffness * (this.mouseY - x[7]) : 0);
-        double ddx0 = change[6];  // x0''  (x0 prime prime)   WAS: x[6]   ????
-        double ddy0 = change[8];  // y0''  (y0 prime prime)
+        double ddx0 = change[6];
+        double ddy0 = change[8];
         double th1 = x[0];
         double dth1 = x[1];
         double th2 = x[2];
@@ -465,14 +383,10 @@ public class MoveableDoublePendulum extends Simulation implements ActionListener
                         ddy0 * L2 * m1 * m2 * Math.sin(th2) -
                         g * L2 * m1 * m2 * Math.sin(th2) -
                         ddy0 * L2 * m2 * m2 * Math.sin(th2) - g * L2 * m2 * m2 * Math.sin(th2))
-        ) /
-                (L1 * L2 * L2 * m2 * (-2 * m1 - m2 + m2 * Math.cos(2 * (th1 - th2))))
-        );
-
+        ) / (L1 * L2 * L2 * m2 * (-2 * m1 - m2 + m2 * Math.cos(2 * (th1 - th2)))));
     }
 
     public void drawRubberBand(Graphics g, ConvertMap map) {
-        // draw the rubberband to mouse position
         if (this.mouseDown) {
             g.setColor(Color.red);
             g.drawLine(map.simToScreenX(this.mouseX), map.simToScreenY(this.mouseY),

@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Spring2DSim extends Simulation implements ActionListener {
-    private static final String MASS = "mass", DAMPING = "damping",
-            LENGTH = "spring rest length", STIFFNESS = "spring stiffness",
-            GRAVITY = "gravity";
+    private static final String MASS = "масса", DAMPING = "затухание",
+            LENGTH = "длина пружины", STIFFNESS = "жесткость",
+            GRAVITY = "ускорение";
     private String[] params = {MASS, DAMPING, STIFFNESS, LENGTH, GRAVITY};
     private CSpring spring;
     private CMass bob, topMass;
@@ -33,10 +33,10 @@ public class Spring2DSim extends Simulation implements ActionListener {
         cvs.addElement(spring);
 
         var_names = new String[]{
-                "x position",
-                "y position",
-                "x velocity",
-                "y velocity"
+                "x координата",
+                "y координата",
+                "x ускорение",
+                "y ускорение"
         };
 
         vars[0] = bob.m_X1 + bob.m_Width / 2;
@@ -49,11 +49,10 @@ public class Spring2DSim extends Simulation implements ActionListener {
     public void setupControls() {
         super.setupControls();
 
-        addControl(button_stop = new JButton("reset"));
+        addControl(button_stop = new JButton("сбросить"));
         button_stop.addActionListener(this);
 
-        for (int i = 0; i < params.length; i++)
-            addObserverControl(new DoubleField(this, params[i], 2));
+        for (String param : params) addObserverControl(new DoubleField(this, param, 2));
         showControls(true);
     }
 
@@ -98,10 +97,6 @@ public class Spring2DSim extends Simulation implements ActionListener {
         return super.getParameter(name);
     }
 
-    public String[] getParameterNames() {
-        return params;
-    }
-
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button_stop) {
             vars[0] = topMass.m_X1 + topMass.m_Width / 2;
@@ -141,7 +136,6 @@ public class Spring2DSim extends Simulation implements ActionListener {
             vars[3] = 0;
             modifyObjects();
         }
-
     }
 
 
@@ -155,9 +149,7 @@ public class Spring2DSim extends Simulation implements ActionListener {
         len = Math.sqrt(xx * xx + yy * yy);
 
         change[0] = x[2];
-
         change[1] = x[3];
-
 
         r = -(spring.m_SpringConst / m) * (len - spring.m_RestLength) * xx / len;
         if (b != 0)

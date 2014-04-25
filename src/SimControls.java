@@ -3,13 +3,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.NumberFormat;
 
-/////////////////////////////////////////////////////////////////////////////////
-// A scrollbar where you can set the preferred width and height
+
+
 class MyScrollbar extends JScrollBar {
     int w, h;
 
     public MyScrollbar(int w, int h, int orient, int value, int vis, int min, int max) {
-        // new Scrollbar(orientation, value, visibleAmount, minimum, maximum)
+
         super(orient, value, vis, min, max);
         this.w = w;
         this.h = h;
@@ -21,11 +21,11 @@ class MyScrollbar extends JScrollBar {
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-// A Label where the preferred width and height is determined by the text & font.
-// Otherwise, the Label winds up being larger than necessary.
+
+
+
 class MyLabel extends JLabel {
-    String sample = null;  // sample text is used to figure max width of text
+    String sample = null;
 
     public MyLabel(String text) {
         super(text);
@@ -50,14 +50,14 @@ class MyLabel extends JLabel {
             txt = this.getText();
         else
             txt = sample;
-        w = 5 + myFM.stringWidth(txt); // use sample to figure text width
+        w = 5 + myFM.stringWidth(txt);
         h = myFM.getAscent() + myFM.getDescent();
         return new Dimension(w, h);
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-// A checkbox that is also a parameter Observer.
+
+
 class MyCheckbox extends JCheckBox implements ItemListener, Observer {
     private double value;
     private Subject subj;
@@ -92,15 +92,8 @@ class MyCheckbox extends JCheckBox implements ItemListener, Observer {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-/* A slider consists of a label, a scrollbar, and a numeric display of the value.
- NOTE ON LIGHTWEIGHT CONTAINERS:
- Very important that this is lightweight (inherits from Container), not heavyweight
- (inherits from Panel or Canvas).  When running under the browser, if this is
- heavyweight, then there are LONG DELAYS when this is added back to the applet
- after having been previously removed (i.e. clicking the 'show controls' checkbox
- a couple of times).  If this is lightweight, then there is no delay.
- */
+
+
 class MySlider extends JComponent implements AdjustmentListener, Observer {
     private double min, delta, value;
     private MyScrollbar scroll;
@@ -119,7 +112,7 @@ class MySlider extends JComponent implements AdjustmentListener, Observer {
         delta = (max - min) / increments;
         nameLabel = new MyLabel(name, SwingConstants.CENTER);
         add(nameLabel);
-        // new MyScrollbar(width, height, orientation, value, visibleAmount, minimum, maximum)
+
         scroll = new MyScrollbar(75, 15, Scrollbar.HORIZONTAL, (int) (0.5 + (value - min) / delta),
                 10, 0, increments + 10);
         add(scroll);
@@ -140,54 +133,30 @@ class MySlider extends JComponent implements AdjustmentListener, Observer {
         if (param.equalsIgnoreCase(name) && value != this.value) {
             this.value = value;
             myNumber.setText(nf.format(value));
-            // note that the scroll can only reach certain discrete values,
-            // so its positioning will only approximate this.value
+
+
             scroll.setValue((int) (0.5 + (value - min) / delta));
         }
     }
 
-    // MySlider is AdjustmentListener for the scrollbar, so this function is called when
-    // the scrollbar is modified by the user.
+
+
     public void adjustmentValueChanged(AdjustmentEvent e) {
         if (e.getAdjustable() == scroll) {
             value = min + (double) scroll.getValue() * delta;
-            myNumber.setText(nf.format(value));  // update the text as a side effect
+            myNumber.setText(nf.format(value));
             if (subj != null)
                 subj.setParameter(name, value);
         }
     }
 
-  /*
-  public Insets getInsets() {
-    return new Insets(1,1,1,1);
-  }*/
-  /*  // keep this around for understanding how panel layout works!
-  14. Extensions of Swing components which have UI delegates (including JPanel), should
-typically invoke super.paintComponent() within their own paintComponent() implementation.
-Since the UI delegate will take responsibility for clearing the background on opaque
-components, this will take care of #5.
-
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Rectangle r = getBounds();
-    Rectangle c = g.getClipBounds();
-    System.out.println("Panel.paint "+r.x+" "+ r.y+" "+r.width+" "+r.height);
-    if (c != null)
-      System.out.println(" clip bounds "+c.x+" "+ c.y+" "+c.width+" "+c.height);
-    Insets i = getInsets();
-    System.out.println("  insets "+i.top+" "+i.bottom+" "+i.right+" "+i.left);
-    FlowLayout lm = (FlowLayout)getLayout();
-    System.out.println("  layout hgap vgap "+lm.getHgap()+" "+lm.getVgap());
-    g.setColor(Color.yellow);
-    // NOTE: drawing takes place in local (panel) coordinates!
-    g.fillRect(0, 0, r.width-1, r.height-1);
-  }
-  */
+  
+  
 }
 
-///////////////////////////////////////////////////////////////////////////
-// SimLine is used as a graphic component to visually divide up groups of
-// buttons or other controls.  The actual width is set by the layout manager.
+
+
+
 class SimLine extends JComponent {
     public void paint(Graphics g) {
         Dimension size = getSize();
@@ -200,13 +169,8 @@ class SimLine extends JComponent {
     }
 }
 
-///////////////////////////////////////////////////////////////////////////
-/* DoubleField is a labeled editable text field for a double number.
-   Each instance creates its own listener (NumberValidator), which responds
-   to events like changing the keyboard focus, or hitting the enter key.
-   The listener then updates the double value (if valid, otherwise it
-   restores the old value).
-*/
+
+
 class DoubleField extends JComponent implements Observer {
     private double value;
     private JTextField field;
@@ -257,7 +221,7 @@ class DoubleField extends JComponent implements Observer {
         field.setText(nf.format(value));
     }
 
-    // this should only be called from our NumberValidator inner class
+
     private void modifyValue(double value) {
         this.value = value;
         field.setText(nf.format(value));
@@ -291,7 +255,7 @@ class DoubleField extends JComponent implements Observer {
 
         private void validate(JTextField field) {
             try {
-                // WARNING: do not use Double.parseDouble which is Java 1.2
+
                 double value = (new Double(field.getText())).doubleValue();
                 if (value != dblField.value)
                     dblField.modifyValue(value);
@@ -303,9 +267,9 @@ class DoubleField extends JComponent implements Observer {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////
-// MyChoice is a pop-up menu (Choice) which is also an Observer, so it can
-// synchronize its value with a parameter in its Subject.
+
+
+
 
 class MyChoice extends JComboBox implements ItemListener, Observer {
     private double value;

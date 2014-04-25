@@ -8,20 +8,18 @@ public class Lab extends JApplet implements ItemListener {
     private SimThread timer = null;
     private Simulation sim = null;
     private JComboBox simMenu = null;
-    private boolean browserMode = true;
-    private boolean gameMode = false;
     private int currentSimMenuItem = -1;
 
-    public Lab() {
-    }
-
-    public Lab(boolean browserMode) {
-        this();
-        this.browserMode = browserMode;
-    }
-
     public static void main(String[] args) {
-        JApplet applet = new Lab(true);
+        System.setProperty("Quaqua.tabLayoutPolicy","wrap");
+
+        try {
+            UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
+        } catch (Exception e) {
+
+        }
+
+        JApplet applet = new Lab();
         JFrame frame = new SimFrame(applet);
         frame.setContentPane(applet.getContentPane());
         frame.setVisible(true);
@@ -35,7 +33,7 @@ public class Lab extends JApplet implements ItemListener {
     private void startSim(int simIndex) {
         if (sim != null) {
             stop();
-            sim.shutDown();  // hides all components of this sim
+            sim.shutDown();
             sim = null;
             this.currentSimMenuItem = -1;
         }
@@ -66,7 +64,7 @@ public class Lab extends JApplet implements ItemListener {
 
     public void start() {
         if (timer == null && sim != null) {
-            timer = new SimThread(sim, 10);  // was 33
+            timer = new SimThread(sim, 10);
             timer.start();
         }
     }

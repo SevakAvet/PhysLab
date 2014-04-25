@@ -11,13 +11,12 @@ public class SimThread extends Thread {
 
     public void run() {
         try {
-            while (!interrupted()) { // loop until interrupted
+            while (!interrupted()) {
                 checkSuspended();
                 sim.run();
-                sleep(delay);  // milliseconds
+                sleep(delay);
             }
         } catch (InterruptedException e) {
-            Utility.println("SimThread thread interrupted.");
         }
     }
 
