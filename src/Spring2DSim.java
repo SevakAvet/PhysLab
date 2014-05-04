@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Spring2DSim extends Simulation implements ActionListener {
-    private static final String MASS = "масса", DAMPING = "затухание",
+    private static final String MASS = "масса", DAMPING = "сопротивление",
             LENGTH = "длина пружины", STIFFNESS = "жесткость",
             GRAVITY = "ускорение";
     private String[] params = {MASS, DAMPING, STIFFNESS, LENGTH, GRAVITY};
